@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.4;
 
-import "./runeattack.sol";
+import "./runehelper.sol";
 
-contract CharacterOwnership is RuneAttack {
+contract CharacterOwnership is RuneHelper {
 
     event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
 
@@ -14,7 +14,7 @@ contract CharacterOwnership is RuneAttack {
     
     // mapping (uint => address) characterApprovals;
     
-    constructor () RuneAttack() {
+    constructor () RuneHelper() {
         console.log("Character Ownership contract");
     }
 
