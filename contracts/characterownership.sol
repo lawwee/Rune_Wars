@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.4;
 
-import "./RuneAttack.sol";
+import "./runeattack.sol";
 
-contract PlayerOwnership is RuneAttack {
+contract CharacterOwnership is RuneAttack {
 
     event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
 
@@ -12,33 +12,33 @@ contract PlayerOwnership is RuneAttack {
     using SafeMath32 for uint32;
     using SafeMath16 for uint16;
     
-    mapping (uint => address) playerApprovals;
+    // mapping (uint => address) characterApprovals;
     
     constructor () RuneAttack() {
-        console.log("Player Ownership contract");
+        console.log("Character Ownership contract");
     }
 
     function balanceOf(address _owner) external view returns(uint256) {
-        console.log("balance of address is", playerOwnerCount[_owner]);
-        return playerOwnerCount[_owner];
+        console.log("balance of address is", characterOwnerCount[_owner]);
+        return characterOwnerCount[_owner];
     }
 
     function ownerOf(uint256 _tokenId) external view returns(address) {
-        console.log("current owner of player is", playerOwner[_tokenId]);
-        return playerOwner[_tokenId];
+        console.log("current owner of character is", characterOwner[_tokenId]);
+        return characterOwner[_tokenId];
     }
 
     function _transfer(address _from, address _to, uint256 _tokenId) private {
         require(_from == msg.sender, "You do not own this account");
-        playerOwnerCount[_to] = playerOwnerCount[_to].add(1);
-        playerOwnerCount[msg.sender] = playerOwnerCount[msg.sender].sub(1);
-        playerOwner[_tokenId] = _to;
+        characterOwnerCount[_to] = characterOwnerCount[_to].add(1);
+        characterOwnerCount[msg.sender] = characterOwnerCount[msg.sender].sub(1);
+        characterOwner[_tokenId] = _to;
         emit Transfer(_from, _to, _tokenId);
-        console.log("new owner of player is:", playerOwner[_tokenId]);
+        console.log("new owner of character is:", characterOwner[_tokenId]);
     }
 
     function transferFrom(address _from, address _to, uint256 _tokenId) external payable {
-        require (playerOwner[_tokenId] == msg.sender, "You do not own this player");
+        require (characterOwner[_tokenId] == msg.sender, "You do not own this character");
         _transfer(_from, _to, _tokenId);
     }
 }
