@@ -19,18 +19,20 @@ contract NPCBattles is CharacterOwnership {
         console.log("This is for NPC Character creation");
     }
 
-    function _npcCharacter (string memory _name, uint dna) public {
+    function _npcCharacter (string memory _name, uint dna) internal {
         npcCharacters.push(NPC(_name, dna, 100));
-        uint id = characters.length - 1;
+        uint id = npcCharacters.length - 1;
         console.log("Id of NPC is", id);
     }
 
-    // function createNPC (uint npcId) public {
-    //     require(playerOwnerCount[msg.sender] == 0, "Can only create one player");
-    //     uint randDna = _generateRandomDna("Blessing");
-    //     randDna = randDna - randDna % 100;
-    //     _npcPlayer("Blessing", randDna);
+    function createNPC (uint npcId) public {
+        uint randDna = _generateRandomDna("Blessing");
+        randDna = randDna - randDna % 100;
+        _npcCharacter("Blessing", randDna);
 
-    //     NPC storage player = characters[npcId];
-    // }
+        NPC storage npc = npcCharacters[npcId];
+        
+        console.log("Name of NPC is", npc.name);
+        console.log("Exp of NPC is", npc.mainExp);
+    }
 }

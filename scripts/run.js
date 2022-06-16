@@ -7,7 +7,10 @@ const main = async () => {
 
     console.log("ownership Contract address is :", ownerContract.address);
 
-    let txn = await ownerContract._npcPlayer("Thor", 709256);
+    // let txn = await ownerContract._npcCharacter("Blessing", 9867);
+    // await txn.wait()
+
+    let txn = await ownerContract.createNPC(0);
     await txn.wait()
 
     // let txn = await ownerContract.createRandomPlayer("Lawwee");
