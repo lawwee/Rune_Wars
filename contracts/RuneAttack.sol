@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./RuneHelper.sol";
+import "./runehelper.sol";
 
 contract RuneAttack is RuneHelper {
 
@@ -22,30 +22,42 @@ contract RuneAttack is RuneHelper {
         return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, rando))) % _mod;
     }
 
-    function _fight (uint _playerId, uint _targetId) external onlyOwnerOf(_playerId) {
-        require(playerOwner[_targetId] != msg.sender, "You cannot fight yourself");
-        Player storage myPlayer = players[_playerId];
-        Player storage targetPlayer = players[_targetId];
+    function _fight (uint _characterId, uint _targetId) external onlyOwnerOf(_characterId) {
+        Character storage myCharacter = characters[_characterId];
+        Character storage targetCharacter = characters[_targetId];
+        console.log("Character Id is has %d exp", myCharacter.mainExp);
+        console.log("Target Id is has %d exp", targetCharacter.mainExp);
         uint rand = randoMod(100);
         console.log("number generated is", rand);
         if (rand <= attackProbability) {
-            myPlayer.winCount = myPlayer.winCount.add(1);
-            myPlayer.level = myPlayer.level.add(1);
-            targetPlayer.lossCount = targetPlayer.lossCount.add(1);
-            triggerCooldownTime(myPlayer);
+            myCharacter.mainExp = myCharacter.mainExp.add(50);
         } else {
-            myPlayer.lossCount = myPlayer.lossCount.add(1);
-            targetPlayer.winCount = targetPlayer.winCount.add(1);
-            triggerCooldownTime(myPlayer);
+            targetCharacter.mainExp = targetCharacter.mainExp.add(50);
         }
-        // if (myplayer.level > targetPlayer.level) {
-        //     _win();
-        // } else if (myPlayer.level < targetPlayer.level) {
-        //     _loss();
-        // }
-        // triggerCooldownTime(myPlayer);
-        console.log("Player details:", myPlayer.winCount);
-        console.log("Player details:", myPlayer.lossCount);
+        console.log("Player Id now has %d exp", myCharacter.mainExp);
+        console.log("Target Id now has %d exp", targetCharacter.mainExp);
+    }
+
+    function fight (uint _characterId, uint _targetId) external onlyOwnerOf(_characterId) {
+        require(characterOwner[_targetId] != msg.sender, "You cannot fight yourself");
+        Character storage myCharacter = characters[_characterId];
+        Character storage targetCharacter = characters[_targetId];
+        uint rand = randoMod(100);
+        console.log("number generated is", rand);
+        if (rand <= attackProbability) {
+            myCharacter.winCount = myCharacter.winCount.add(1);
+            myCharacter.level = myCharacter.level.add(1);
+            targetCharacter.lossCount = targetCharacter.lossCount.add(1);
+            triggerCooldownTime(myCharacter);
+        } else {
+            myCharacter.lossCount = myCharacter.lossCount.add(1);
+            targetCharacter.winCount = targetCharacter.winCount.add(1);
+            triggerCooldownTime(myCharacter);
+        }
+
+        console.log("Player Id is has %d exp", myCharacter.mainExp);
+        console.log("Target Id is has %d exp", targetCharacter.mainExp);
+
 
     }
 }
