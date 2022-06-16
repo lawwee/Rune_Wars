@@ -1,7 +1,6 @@
 const main = async () => {
     const [ owner, randomUser, another ] = await hre.ethers.getSigners();
-
-    const ownerContractFactory = await hre.ethers.getContractFactory("NPCBattles")
+    const ownerContractFactory = await hre.ethers.getContractFactory("RuneAttack")
     const ownerContract = await ownerContractFactory.deploy()
     await ownerContract.deployed()
 
@@ -10,16 +9,28 @@ const main = async () => {
     // let txn = await ownerContract._npcCharacter("Blessing", 9867);
     // await txn.wait()
 
-    let txn = await ownerContract.createNPC(0);
-    await txn.wait()
+    // let txn = await ownerContract.createNPC(0);
+    // await txn.wait()
 
-    // let txn = await ownerContract.createRandomPlayer("Lawwee");
-    // await txn.wait();
-    // console.log("Address of owner is:", owner.address);
+    let txn = await ownerContract.createCharacter("Lawwee");
+    await txn.wait();
+    console.log("Address of owner is:", owner.address);
 
-    // txn = await ownerContract.connect(randomUser).createRandomPlayer("Biggie");
+    // txn = await ownerContract.connect(randomUser).createCharacter("Biggie");
     // await txn.wait();
     // console.log("Address of random user is:", randomUser.address);
+
+    txn = await ownerContract.blessing();
+    await txn.wait()
+
+    txn = await ownerContract.another();
+    await txn.wait()
+
+    txn = await ownerContract.fightNPC(0, "Another");
+    await txn.wait()
+
+    // txn = await ownerContract._fight(0,1);
+    // await txn.wait()
 
     // txn = await ownerContract._fight(0, 1);
     // await txn.wait()
