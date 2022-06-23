@@ -2,52 +2,55 @@
 
 pragma solidity ^0.8.4;
 
-import "./npccharacters.sol";
+import "./npcchampions.sol";
 
-contract RuneAttack is NPCCharacters {
+contract RuneAttack is NPCChampions {
 
     using SafeMath for uint256;
     using SafeMath32 for uint32;
     using SafeMath16 for uint16;
 
-    uint rando = 0;
-    uint attackProbability = 70;
+    // uint rando = 0;
+    // uint attackProbability = 70;
 
-    constructor () NPCCharacters() {
-        console.log("For attacking em players");
+    constructor () NPCChampions() {
+        console.log("For attacking em players and NPCs");
     }
 
-
-    function fightPlayer (uint _characterId, uint _targetId) external onlyOwnerOf(_characterId) {
+    function _fight (uint _characterId, uint _targetId) internal onlyOwnerOf(_characterId) {
         require(characterOwner[_targetId] != msg.sender, "You cannot fight yourself");
         Character storage myCharacter = characters[_characterId];
         Character storage targetCharacter = characters[_targetId];
-        console.log("Character Id is has %d exp", myCharacter.mainExp);
-        console.log("Target Id is has %d exp", targetCharacter.mainExp);
-        if (myCharacter.mainExp > targetCharacter.mainExp) {
-            myCharacter.mainExp = myCharacter.mainExp.add(50);
-            myCharacter.winCount = myCharacter.winCount.add(1);
-            myCharacter.level = myCharacter.level.add(1);
-            targetCharacter.lossCount = targetCharacter.lossCount.add(1);
-            triggerCooldownTime(myCharacter);
+        if (myCharacter.totalExp > targetCharacter.totalExp) {
+            myCharacter.totalExp = myCharacter.mainExp.add(50) + myCharacter.battleExp.add(50);
+            targetCharacter.totalExp = targetCharacter.mainExp.sub(10) + targetCharacter.battleExp;
         } else {
-            targetCharacter.mainExp = targetCharacter.mainExp.add(50);
-            myCharacter.lossCount = myCharacter.lossCount.add(1);
-            targetCharacter.winCount = targetCharacter.winCount.add(1);
-            triggerCooldownTime(myCharacter);
+            myCharacter.totalExp = myCharacter.mainExp.sub(10) + myCharacter.battleExp;
+            targetCharacter.totalExp = targetCharacter.mainExp.add(50) + targetCharacter.battleExp.add(50);
         }
-        console.log("Player Id now has %d exp", myCharacter.mainExp);
-        console.log("Target Id now has %d exp", targetCharacter.mainExp);
+        console.log("Player Id now has %d exp", myCharacter.totalExp);
+        console.log("Target Id now has %d exp", targetCharacter.totalExp);
+
     }
 
-    function fightNPC(uint _characterId, string memory _name) external {
-        Character storage myCharacter = characters[_characterId];
-        uint id = npcIds[_name];
-        NPC storage npc = npcCharacters[id];
+    function fightPlayer (string memory _characterId, string memory _targetId) external {
+        uint characterid = characterIds[_characterId];
+        uint targetid = characterIds[_targetId];        
+        _fight(characterid, targetid);
+    }
 
-        if (myCharacter.mainExp > npc.mainExp) {
-            myCharacter.mainExp = myCharacter.mainExp.add(100);
-            console.log("You won 100 exp");   
+    function fightNPC(string memory character, string memory _name) external {
+        uint npcid = npcIds[_name];
+        uint characterid = characterIds[character];
+        require(characterOwner[characterid] == msg.sender, "You do not own this player");
+
+        Character storage myCharacter = characters[characterid];
+        NPC storage npc = npcCharacters[npcid];
+
+        if (myCharacter.totalExp > npc.exp) {
+            myCharacter.totalExp = myCharacter.mainExp.add(50) + myCharacter.battleExp.add(50);
+            console.log("You won 100 exp");
+            console.log("You won a total of %d", myCharacter.totalExp);
         } else {
             console.log("You lost");
         }
@@ -57,7 +60,6 @@ contract RuneAttack is NPCCharacters {
     //     rando = rando.add(1);
     //     return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, rando))) % _mod;
     // }
-
 
     // function fight (uint _characterId, uint _targetId) external onlyOwnerOf(_characterId) {
     //     require(characterOwner[_targetId] != msg.sender, "You cannot fight yourself");

@@ -18,6 +18,7 @@ contract CharacterFactory is Ownable {
 
     mapping (uint => address) public characterOwner;
     mapping (address => uint) public characterOwnerCount;
+    mapping (string => uint) internal characterIds;
 
     event NewCharacter(uint characterId, string name, uint dna);
 
@@ -29,6 +30,8 @@ contract CharacterFactory is Ownable {
         uint16 winCount;
         uint16 lossCount;
         uint256 mainExp;
+        uint256 battleExp;
+        uint256 totalExp;
     }
 
     Character[] public characters;
@@ -38,8 +41,9 @@ contract CharacterFactory is Ownable {
     }
 
     function _createCharacter (string memory _name, uint dna) internal {
-        characters.push(Character(_name, dna, 1, uint32(block.timestamp + cooldownTime), 0, 0, 50));
+        characters.push(Character(_name, dna, 1, uint32(block.timestamp + cooldownTime), 0, 0, 100, 50, 150));
         uint id = characters.length - 1;
+        characterIds[_name] = id;
         characterOwner[id] = msg.sender;
         characterOwnerCount[msg.sender] = characterOwnerCount[msg.sender].add(1);
         emit NewCharacter(id, _name, dna);
