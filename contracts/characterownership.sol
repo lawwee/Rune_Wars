@@ -11,9 +11,7 @@ contract CharacterOwnership is RuneHelper {
     using SafeMath for uint256;
     using SafeMath32 for uint32;
     using SafeMath16 for uint16;
-    
-    // mapping (uint => address) characterApprovals;
-    
+        
     constructor () RuneHelper() {
         console.log("Character Ownership contract");
     }

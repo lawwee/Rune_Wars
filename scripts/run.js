@@ -16,18 +16,23 @@ const main = async () => {
     await txn.wait();
     console.log("Address of owner is:", owner.address);
 
-    // txn = await ownerContract.connect(randomUser).createCharacter("Biggie");
-    // await txn.wait();
-    // console.log("Address of random user is:", randomUser.address);
+    txn = await ownerContract.connect(randomUser).createCharacter("Biggie");
+    await txn.wait();
+    console.log("Address of random user is:", randomUser.address);
 
-    txn = await ownerContract.blessing();
+    txn = await ownerContract.lagertha();
     await txn.wait()
 
-    txn = await ownerContract.another();
-    await txn.wait()
+    // txn = await ownerContract.another();
+    // await txn.wait()
 
-    txn = await ownerContract.fightNPC(0, "Another");
+    txn = await ownerContract.fightNPC("Lawwee", "Lagertha");
     await txn.wait()
+    // txn = await ownerContract.connect(randomUser).fightNPC("Biggie", "Blessing");
+    // await txn.wait()
+
+    // txn = await ownerContract.fightPlayer("Lawwee", "Biggie");
+    // await txn.wait()
 
     // txn = await ownerContract._fight(0,1);
     // await txn.wait()

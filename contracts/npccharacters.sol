@@ -14,7 +14,7 @@ contract NPCCharacters is CharacterOwnership {
     struct NPC {
         string name;
         uint dna;
-        uint256 mainExp;
+        uint256 exp;
     }
 
     NPC[] internal npcCharacters;
@@ -35,14 +35,14 @@ contract NPCCharacters is CharacterOwnership {
     function blessing() external {
         uint randDna = _generateRandomDna("Blessing");
         randDna = randDna - randDna % 100;
-        _npcCharacter("Blessing", randDna, 10);
+        _npcCharacter("Blessing", randDna, 70);
     }
 
     function another() external {
         uint randDna = _generateRandomDna("Blessing");
         randDna = randDna - randDna % 100;
         _npcCharacter("Another", randDna, 10);
-    } 
+    }
 
 //     function fight(uint _characterId, string memory _name) external {
 //         Character storage myCharacter = characters[_characterId];
