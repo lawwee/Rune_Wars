@@ -34,6 +34,8 @@ contract CharacterFactory is Ownable {
         uint256 totalExp;
     }
 
+    enum Clans {Fornburg, Rygjafylke, Wulfings, Scavangar}
+
     Character[] public characters;
 
     constructor () {
@@ -58,10 +60,25 @@ contract CharacterFactory is Ownable {
         return rand % dnaModulus;
     }
 
-    function createCharacter (string memory _name) public {
-        require(characterOwnerCount[msg.sender] == 0, "Can only create one player");
+    function createCharacter (string memory _name, Clans _clan) public {
+        require(characterOwnerCount[msg.sender] == 0, "Can only create one player");      
         uint randDna = _generateRandomDna(_name);
-        randDna = randDna - randDna % 100;
+        if (Clans.Fornburg == _clan) {
+            randDna = randDna - randDna % 100 + 88; 
+            console.log("This is Clan Fornburg");
+        }
+        if (Clans.Rygjafylke == _clan) {
+            randDna = randDna - randDna % 100 + 66; 
+            console.log("This is Clan Rygjafylke");
+        }
+        if (Clans.Wulfings == _clan) {
+            randDna = randDna - randDna % 100 + 44; 
+            console.log("This is Clan Wulfings");
+        }
+        if (Clans.Scavangar == _clan) {
+            randDna = randDna - randDna % 100 + 22;
+            console.log("This is Clan Scavangar");
+        }
         _createCharacter(_name, randDna);
     }
 
