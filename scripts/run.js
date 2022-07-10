@@ -12,12 +12,17 @@ const main = async () => {
     // let txn = await ownerContract.createNPC(0);
     // await txn.wait()
 
-    let txn = await ownerContract.createCharacter("Lawwee", 1);
+    let txn = await ownerContract.createCharacter("Lawwee", 0);
     await txn.wait();
     console.log("Address of owner is:", owner.address);
 
-    // txn = await ownerContract.chooseClan(1);
+    txn = await ownerContract.connect(randomUser).createCharacter("Biggie", 0);
+    await txn.wait();
+    console.log("Address of owner is:", owner.address);
 
+    txn = await ownerContract.checkClan("Lawwee");
+
+    txn = await ownerContract.clanNumbers(0);
 }
 
 const runMain = async () => {

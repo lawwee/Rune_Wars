@@ -19,6 +19,8 @@ contract CharacterFactory is Ownable {
     mapping (uint => address) public characterOwner;
     mapping (address => uint) public characterOwnerCount;
     mapping (string => uint) internal characterIds;
+    mapping (address => string) public characterClan;
+    mapping (Clans => uint) public clanTotal;
 
     event NewCharacter(uint characterId, string name, uint dna);
 
@@ -64,22 +66,46 @@ contract CharacterFactory is Ownable {
         require(characterOwnerCount[msg.sender] == 0, "Can only create one player");      
         uint randDna = _generateRandomDna(_name);
         if (Clans.Fornburg == _clan) {
+            characterClan[msg.sender] = "Fornburg";
+            clanTotal[Clans.Fornburg] = clanTotal[Clans.Fornburg].add(1);
             randDna = randDna - randDna % 100 + 88; 
             console.log("This is Clan Fornburg");
         }
         if (Clans.Rygjafylke == _clan) {
+            characterClan[msg.sender] = "Rygjafylke";
+            clanTotal[Clans.Rygjafylke] = clanTotal[Clans.Rygjafylke].add(1);
             randDna = randDna - randDna % 100 + 66; 
             console.log("This is Clan Rygjafylke");
         }
         if (Clans.Wulfings == _clan) {
+            characterClan[msg.sender] = "Wulfings";
+            clanTotal[Clans.Wulfings] = clanTotal[Clans.Wulfings].add(1);
             randDna = randDna - randDna % 100 + 44; 
             console.log("This is Clan Wulfings");
         }
         if (Clans.Scavangar == _clan) {
+            characterClan[msg.sender] = "Scavangar";
+            clanTotal[Clans.Scavangar] = clanTotal[Clans.Scavangar].add(1);
             randDna = randDna - randDna % 100 + 22;
             console.log("This is Clan Scavangar");
         }
         _createCharacter(_name, randDna);
+    }
+
+    function checkClan(string memory _character) public view returns (string memory) {
+        address _address = characterOwner[characterIds[_character]];
+        /**
+         Breakdown of the above Code is as follows:
+         The characterIds mapping takes the _character as argument herein returning an uint
+         The charaterOwner mapping then takes the uint and is being passed as a direct argument to return the right address
+        */
+        console.log("This character's clan is", characterClan[_address]);
+        return characterClan[_address];
+    }
+
+    function clanNumbers (Clans _clan) public view returns (uint) {
+        console.log("Total number that belongs to this clan is", clanTotal[_clan]);
+        return clanTotal[_clan];
     }
 
 }
