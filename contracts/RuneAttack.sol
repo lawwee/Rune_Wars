@@ -21,15 +21,21 @@ contract RuneAttack is NPCChampions {
         require(characterOwner[_targetId] != msg.sender, "You cannot fight yourself");
         Character storage myCharacter = characters[_characterId];
         Character storage targetCharacter = characters[_targetId];
-        if (myCharacter.totalExp > targetCharacter.totalExp) {
-            myCharacter.totalExp = myCharacter.mainExp.add(50) + myCharacter.battleExp.add(50);
-            targetCharacter.totalExp = targetCharacter.mainExp.sub(10) + targetCharacter.battleExp;
+        uint myTotalExp = myCharacter.mainExp + myCharacter.battleExp;
+        uint targetTotalExp = targetCharacter.mainExp + targetCharacter.battleExp;
+        if (myTotalExp > targetTotalExp) {
+            myCharacter.mainExp = myCharacter.mainExp.add(50);
+            myCharacter.battleExp = myCharacter.battleExp.add(50);
+            myCharacter.winCount.add(1);
+            targetCharacter.lossCount.add(1);
         } else {
-            myCharacter.totalExp = myCharacter.mainExp.sub(10) + myCharacter.battleExp;
-            targetCharacter.totalExp = targetCharacter.mainExp.add(50) + targetCharacter.battleExp.add(50);
+            targetCharacter.mainExp = targetCharacter.mainExp.add(50);
+            targetCharacter.battleExp = targetCharacter.battleExp.add(50);
+            targetCharacter.winCount.add(1);
+            myCharacter.lossCount.add(1);
         }
-        console.log("Player Id now has %d exp", myCharacter.totalExp);
-        console.log("Target Id now has %d exp", targetCharacter.totalExp);
+        console.log("Player Id now has %d exp", myCharacter.mainExp);
+        console.log("Target Id now has %d exp", targetCharacter.mainExp);
 
     }
 
@@ -39,7 +45,7 @@ contract RuneAttack is NPCChampions {
         _fight(characterid, targetid);
     }
 
-    function fightNPC(string memory character, string memory _name) external {
+    function fightNPC(string memory character, string memory _name) public returns (bool){
         uint npcid = npcIds[_name];
         uint characterid = characterIds[character];
         require(characterOwner[characterid] == msg.sender, "You do not own this player");
@@ -47,12 +53,15 @@ contract RuneAttack is NPCChampions {
         Character storage myCharacter = characters[characterid];
         NPC storage npc = npcCharacters[npcid];
 
-        if (myCharacter.totalExp > npc.exp) {
-            myCharacter.totalExp = myCharacter.mainExp.add(50) + myCharacter.battleExp.add(50);
+        uint myTotalExp = myCharacter.mainExp + myCharacter.battleExp;
+        if (myTotalExp > npc.exp) {
+            myCharacter.mainExp = myCharacter.mainExp.add(100);
             console.log("You won 100 exp");
-            console.log("You won a total of %d", myCharacter.totalExp);
+            console.log("You won a total of %d", myCharacter.mainExp);
+            return true;
         } else {
             console.log("You lost");
+            return false;
         }
     }
 
@@ -81,4 +90,7 @@ contract RuneAttack is NPCChampions {
     //     console.log("Player Id is has %d exp", myCharacter.mainExp);
     //     console.log("Target Id is has %d exp", targetCharacter.mainExp);
     // }
+    // supply of ten for God tier weapons
+    // supply of hundred for champion tier weapons
+    // infinite number of weapons for regular
 }

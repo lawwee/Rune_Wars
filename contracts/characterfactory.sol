@@ -33,10 +33,9 @@ contract CharacterFactory is Ownable {
         uint16 lossCount;
         uint256 mainExp;
         uint256 battleExp;
-        uint256 totalExp;
     }
 
-    enum Clans {Fornburg, Rygjafylke, Wulfings, Scavangar}
+    enum Clans { Raven_Clan, Wolf_Clan, Bear_Clan, Scavangar }
 
     Character[] public characters;
 
@@ -45,7 +44,7 @@ contract CharacterFactory is Ownable {
     }
 
     function _createCharacter (string memory _name, uint dna) internal {
-        characters.push(Character(_name, dna, 1, uint32(block.timestamp + cooldownTime), 0, 0, 100, 50, 150));
+        characters.push(Character(_name, dna, 1, uint32(block.timestamp + cooldownTime), 0, 0, 100, 50));
         uint id = characters.length - 1;
         characterIds[_name] = id;
         characterOwner[id] = msg.sender;
@@ -65,23 +64,23 @@ contract CharacterFactory is Ownable {
     function createCharacter (string memory _name, Clans _clan) public {
         require(characterOwnerCount[msg.sender] == 0, "Can only create one player");      
         uint randDna = _generateRandomDna(_name);
-        if (Clans.Fornburg == _clan) {
-            characterClan[msg.sender] = "Fornburg";
-            clanTotal[Clans.Fornburg] = clanTotal[Clans.Fornburg].add(1);
+        if (Clans.Raven_Clan == _clan) {
+            characterClan[msg.sender] = "Raven's Clan";
+            clanTotal[Clans.Raven_Clan] = clanTotal[Clans.Raven_Clan].add(1);
             randDna = randDna - randDna % 100 + 88; 
-            console.log("This is Clan Fornburg");
+            console.log("This is Clan Raven's Clan");
         }
-        if (Clans.Rygjafylke == _clan) {
-            characterClan[msg.sender] = "Rygjafylke";
-            clanTotal[Clans.Rygjafylke] = clanTotal[Clans.Rygjafylke].add(1);
+        if (Clans.Wolf_Clan == _clan) {
+            characterClan[msg.sender] = "Wolf_Clan";
+            clanTotal[Clans.Wolf_Clan] = clanTotal[Clans.Wolf_Clan].add(1);
             randDna = randDna - randDna % 100 + 66; 
-            console.log("This is Clan Rygjafylke");
+            console.log("This is Clan Wolf_Clan");
         }
-        if (Clans.Wulfings == _clan) {
-            characterClan[msg.sender] = "Wulfings";
-            clanTotal[Clans.Wulfings] = clanTotal[Clans.Wulfings].add(1);
+        if (Clans.Bear_Clan == _clan) {
+            characterClan[msg.sender] = "Bear_Clan";
+            clanTotal[Clans.Bear_Clan] = clanTotal[Clans.Bear_Clan].add(1);
             randDna = randDna - randDna % 100 + 44; 
-            console.log("This is Clan Wulfings");
+            console.log("This is Clan Bear_Clan");
         }
         if (Clans.Scavangar == _clan) {
             characterClan[msg.sender] = "Scavangar";
@@ -97,7 +96,7 @@ contract CharacterFactory is Ownable {
         /**
          Breakdown of the above Code is as follows:
          The characterIds mapping takes the _character as argument herein returning an uint
-         The charaterOwner mapping then takes the uint and is being passed as a direct argument to return the right address
+         The charaterOwner mapping then takes the uint and is being passed as a direct argument to return the right address  
         */
         console.log("This character's clan is", characterClan[_address]);
         return characterClan[_address];
